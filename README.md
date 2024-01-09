@@ -60,7 +60,7 @@ Por isso, deixamos abaixo o link para o layout da aplicação que utilizaria ess
 
 #### /ORG
 
-- [POST] /register
+- [POST] /register - x
 
 ```json
 {
@@ -80,7 +80,7 @@ Por isso, deixamos abaixo o link para o layout da aplicação que utilizaria ess
 }
 ```
 
-- [POST] /auth
+- [POST] /auth - x
 
 ```json
 {

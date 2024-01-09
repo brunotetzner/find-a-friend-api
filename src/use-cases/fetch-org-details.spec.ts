@@ -1,29 +1,29 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { InMemoryOrgRepository } from "@/repositories/in-memory/in-memory-orgs-repository";
 import { InMemoryAddressRepository } from "@/repositories/in-memory/in-memory-address-repository";
-import { RegisterUseCase } from "./register";
-import { OrgAlreadyExistsError } from "./errors/org-already-exists";
-import { compare } from "bcryptjs";
+import { hash } from "bcryptjs";
+import { FetchOrgDetailsUseCase } from "./fetch-org-details";
+import { randomUUID } from "crypto";
+import { OrgNotFoundError } from "./errors/org-not-found";
 
 let orgsRepository: InMemoryOrgRepository;
+let sut: FetchOrgDetailsUseCase;
 let addressRepository: InMemoryAddressRepository;
-let sut: RegisterUseCase;
 
 const orgBody = {
   name: "Centro de adoção de madureira",
   phone: "+5519999890165",
   email: "centro1111@madureira.com",
-  password: "123456",
   description: "teste",
   addressId: "",
 };
 
-describe("Register Org Use case", () => {
+describe("get org Use case", () => {
   beforeEach(async () => {
     orgsRepository = new InMemoryOrgRepository();
     addressRepository = new InMemoryAddressRepository();
 
-    sut = new RegisterUseCase(orgsRepository);
+    sut = new FetchOrgDetailsUseCase(orgsRepository);
 
     const { id } = await addressRepository.create({
       zipCode: "13836242",
@@ -37,28 +37,28 @@ describe("Register Org Use case", () => {
     orgBody.addressId = id;
   });
 
-  it("Should be able to register", async () => {
-    const { org } = await sut.execute(orgBody);
+  it("Should be able to get org details", async () => {
+    const orgData = await orgsRepository.create({
+      ...orgBody,
+      password_hash: await hash("123456", 6),
+    });
 
+    const { org } = await sut.execute({
+      orgId: orgData.id,
+    });
     expect(org.id).toEqual(expect.any(String));
   });
 
-  it("Should not be able to register twice with the seme e-mail", async () => {
-    await sut.execute(orgBody);
-
-    await expect(() => sut.execute(orgBody)).rejects.toBeInstanceOf(
-      OrgAlreadyExistsError
-    );
-  });
-
-  it("Should hash org upon registration", async () => {
-    const { org } = await sut.execute(orgBody);
-
-    const isPasswordCorrectlyHashed = await compare(
-      "123456",
-      org.password_hash
-    );
-
-    expect(isPasswordCorrectlyHashed).toBe(true);
+  it("Should not be able to get org details when it does not exists", async () => {
+    await orgsRepository.create({
+      ...orgBody,
+      password_hash: await hash("123456", 6),
+    });
+    await expect(
+      async () =>
+        await sut.execute({
+          orgId: randomUUID(),
+        })
+    ).rejects.toBeInstanceOf(OrgNotFoundError);
   });
 });
