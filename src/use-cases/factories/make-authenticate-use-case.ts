@@ -1,5 +1,5 @@
 import { PrismaOrgRepository } from "@/repositories/prisma/prisma-orgs-repository";
-import { AuthenticateUseCase } from "../authenticate";
+import { AuthenticateUseCase } from "../uc-authenticate/authenticate";
 
 export function makeAuthenticateUseCase() {
   const orgsRepository = new PrismaOrgRepository();

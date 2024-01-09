@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from "vitest";
 import { InMemoryOrgRepository } from "@/repositories/in-memory/in-memory-orgs-repository";
 import { InMemoryAddressRepository } from "@/repositories/in-memory/in-memory-address-repository";
 import { RegisterUseCase } from "./register";
-import { OrgAlreadyExistsError } from "./errors/org-already-exists";
+import { OrgAlreadyExistsError } from "../errors/org-already-exists";
 import { compare } from "bcryptjs";
 
 let orgsRepository: InMemoryOrgRepository;

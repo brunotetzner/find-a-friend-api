@@ -4,7 +4,7 @@ import { InMemoryAddressRepository } from "@/repositories/in-memory/in-memory-ad
 import { hash } from "bcryptjs";
 import { FetchOrgDetailsUseCase } from "./fetch-org-details";
 import { randomUUID } from "crypto";
-import { OrgNotFoundError } from "./errors/org-not-found";
+import { OrgNotFoundError } from "../errors/org-not-found";
 
 let orgsRepository: InMemoryOrgRepository;
 let sut: FetchOrgDetailsUseCase;

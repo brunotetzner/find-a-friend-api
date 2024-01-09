@@ -1,7 +1,7 @@
 import { AddressRepository } from "@/repositories/address-repository";
 import { Address } from "@prisma/client";
 import axios from "axios";
-import { ViaCepNotFoundError } from "./errors/via-cep-not-found";
+import { ViaCepNotFoundError } from "../errors/via-cep-not-found";
 
 interface RegisterAddressUseCaseRequest {
   zipCode: string;

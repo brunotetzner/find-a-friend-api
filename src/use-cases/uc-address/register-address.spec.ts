@@ -1,7 +1,7 @@
 import { describe, beforeEach, expect, it } from "vitest";
 import { InMemoryAddressRepository } from "@/repositories/in-memory/in-memory-address-repository";
 import { RegisterAddressUseCase } from "./register-address";
-import { ViaCepNotFoundError } from "./errors/via-cep-not-found";
+import { ViaCepNotFoundError } from "../errors/via-cep-not-found";
 
 let addressRepository: InMemoryAddressRepository;
 let sut: RegisterAddressUseCase;

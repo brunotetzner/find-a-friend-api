@@ -1,4 +1,4 @@
-import { DeleteAddressUseCase } from "../delete-address";
+import { DeleteAddressUseCase } from "../uc-address/delete-address";
 import { PrismaAddressRepository } from "@/repositories/prisma/prisma-address-repository";
 
 export function makeDeleteAddressUseCase() {

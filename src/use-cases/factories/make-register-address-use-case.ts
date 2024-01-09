@@ -1,4 +1,4 @@
-import { RegisterAddressUseCase } from "../register-address";
+import { RegisterAddressUseCase } from "../uc-address/register-address";
 import { PrismaAddressRepository } from "@/repositories/prisma/prisma-address-repository";
 
 export function makeRegisterAddressUseCase() {
