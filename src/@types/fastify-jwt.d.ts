@@ -1,9 +1,9 @@
-// import "@types/fastify-jwt";
+import "@types/fastify-jwt";
 
-// declare module "@fastify/jwt" {
-//   interface FastifyJWT {
-//     user: {
-//       sub: string;
-//     };
-//   }
-// }
+declare module "@fastify/jwt" {
+  interface FastifyJWT {
+    user: {
+      sub: string;
+    };
+  }
+}

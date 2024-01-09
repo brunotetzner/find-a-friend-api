@@ -2,7 +2,7 @@ import request from "supertest";
 import { app } from "@/app";
 import { it, describe, beforeAll, afterAll, expect } from "vitest";
 
-describe("Register (e2e)", () => {
+describe("Authenticate (e2e)", () => {
   beforeAll(async () => {
     await app.ready();
   });
@@ -11,7 +11,7 @@ describe("Register (e2e)", () => {
     await app.close();
   });
 
-  it("should be able to create a org", async () => {
+  it("should be able to authenticate a org", async () => {
     const body = {
       name: "Centro de adoção de madureira",
       phone: "+5519999890165",
@@ -27,8 +27,13 @@ describe("Register (e2e)", () => {
       },
       description: "teste12345",
     };
-    const response = await request(app.server).post("/org").send(body);
+    await request(app.server).post("/org").send(body);
 
-    expect(response.status).toBe(201);
+    const response = await request(app.server)
+      .post("/org/authenticate")
+      .send({ email: body.email, password: body.password });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
   });
 });

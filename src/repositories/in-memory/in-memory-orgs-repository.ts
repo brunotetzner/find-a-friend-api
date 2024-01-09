@@ -2,7 +2,7 @@ import { Prisma, Org } from "@prisma/client";
 import { OrgsRepository } from "../orgs-repository";
 import { randomUUID } from "node:crypto";
 
-export class InMemoryOrgsRepository implements OrgsRepository {
+export class InMemoryOrgRepository implements OrgsRepository {
   public items: Org[] = [];
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

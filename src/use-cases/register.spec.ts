@@ -1,11 +1,11 @@
 import { describe, expect, it, beforeEach } from "vitest";
-import { InMemoryOrgsRepository } from "@/repositories/in-memory/in-memory-orgs-repository";
+import { InMemoryOrgRepository } from "@/repositories/in-memory/in-memory-orgs-repository";
 import { InMemoryAddressRepository } from "@/repositories/in-memory/in-memory-address-repository";
 import { RegisterUseCase } from "./register";
 import { OrgAlreadyExistsError } from "./errors/org-already-exists";
 import { compare } from "bcryptjs";
 
-let orgsRepository: InMemoryOrgsRepository;
+let orgsRepository: InMemoryOrgRepository;
 let addressRepository: InMemoryAddressRepository;
 let sut: RegisterUseCase;
 
@@ -20,7 +20,7 @@ const orgBody = {
 
 describe("Register Org in Use case", () => {
   beforeEach(async () => {
-    orgsRepository = new InMemoryOrgsRepository();
+    orgsRepository = new InMemoryOrgRepository();
     addressRepository = new InMemoryAddressRepository();
 
     sut = new RegisterUseCase(orgsRepository);
