@@ -9,6 +9,7 @@ interface RegisterUseCaseRequest {
   email: string;
   password: string;
   addressId: string;
+  description: string;
 }
 
 interface RegisterUseCaseResponse {
@@ -32,6 +33,7 @@ export class RegisterUseCase {
       email: body.email,
       addressId: body.addressId,
       password_hash,
+      description: body.description,
     };
     const org = await this.orgsRepository.create(orgData);
 

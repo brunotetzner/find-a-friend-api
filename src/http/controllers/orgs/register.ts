@@ -12,6 +12,7 @@ interface OrgBody {
   phone: string;
   email: string;
   password: string;
+  description: string;
   address: {
     zipCode: string;
     street: string;
@@ -31,6 +32,7 @@ export async function register(
     phone: z.string().min(14).max(14),
     email: z.string().email(),
     password: z.string().min(6).max(255),
+    description: z.string().min(6).max(1000),
   });
 
   const orgAddressBodySchema = z.object({
