@@ -5,7 +5,6 @@ import { randomUUID } from "node:crypto";
 export class InMemoryOrgRepository implements OrgsRepository {
   public items: Org[] = [];
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async create(data: Prisma.OrgUncheckedCreateInput): Promise<Org> {
     const Org = {
       id: randomUUID(),
@@ -30,5 +29,20 @@ export class InMemoryOrgRepository implements OrgsRepository {
   async findById(id: string): Promise<Org | null> {
     const Org = this.items.find((item) => item.id === id);
     return Org || null;
+  }
+
+  async update(id: string, data: Prisma.OrgUncheckedUpdateInput): Promise<Org> {
+    const orgIndex = this.items.findIndex((item) => item.id === id);
+
+    const existingOrg = { ...this.items[orgIndex] };
+    const updatedOrg = Object.assign(existingOrg, data);
+    this.items[orgIndex] = updatedOrg;
+
+    return updatedOrg;
+  }
+
+  async delete(id: string): Promise<void> {
+    const orgIndex = this.items.findIndex((item) => item.id === id);
+    await this.items.splice(orgIndex, 1)[0];
   }
 }
