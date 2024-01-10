@@ -91,5 +91,5 @@ Por isso, deixamos abaixo o link para o layout da aplicação que utilizaria ess
 
 - [POST] /refresh
 - [GET] /me - x
-- [DELETE] /
-- [PATCH/PUT] /
+- [DELETE] / - x
+- [PATCH/PUT] / -x
