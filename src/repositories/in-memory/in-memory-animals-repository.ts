@@ -46,4 +46,43 @@ export class InMemoryAnimalsRepository implements AnimalsRepository {
     const animalIndex = this.items.findIndex((item) => item.id === id);
     await this.items.splice(animalIndex, 1)[0];
   }
+
+  async findMany({
+    city,
+    type,
+    age,
+    weight,
+    temperament,
+    breed,
+    orgId,
+    page = 1,
+    pageSize = 10,
+  }: {
+    city: string;
+    type?: string;
+    age?: number;
+    weight?: number;
+    temperament?: string;
+    breed?: string;
+    orgId?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<Animal[]> {
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+
+    const filteredAnimals = this.items.filter((animal) => {
+      return (
+        (!city || animal.addressId === city) &&
+        (!type || animal.type === type) &&
+        (!age || animal.age === age) &&
+        (!weight || animal.weight === weight) &&
+        (!temperament || animal.temperament === temperament) &&
+        (!breed || animal.breed === breed) &&
+        (!orgId || animal.orgId === orgId)
+      );
+    });
+
+    return filteredAnimals.slice(startIndex, endIndex);
+  }
 }

@@ -2,17 +2,21 @@ import { OrgAlreadyExistsError } from "@/use-cases/errors/org-already-exists";
 import { ViaCepNotFoundError } from "@/use-cases/errors/via-cep-not-found";
 import { makeDeleteAddressUseCase } from "@/use-cases/factories/address/make-delete-address-use-case";
 import { makeRegisterAddressUseCase } from "@/use-cases/factories/address/make-register-address-use-case";
-import { makeRegisterUseCase } from "@/use-cases/factories/orgs/make-register-use-case";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { Address } from "@prisma/client";
+import { Address, AnimalTemperament, AnimalType } from "@prisma/client";
 
-interface OrgBody {
+interface AnimalBody {
+  id: string;
   name: string;
-  phone: string;
-  email: string;
-  password: string;
+  type: AnimalType;
+  age: number;
+  weight: number;
+  temperament: AnimalTemperament;
   description: string;
+  breed?: string;
+  created_at: string;
+  updated_at?: string;
   address: {
     zipCode: string;
     street: string;
@@ -24,15 +28,17 @@ interface OrgBody {
 }
 
 export async function register(
-  request: FastifyRequest<{ Body: OrgBody }>,
+  request: FastifyRequest<{ Body: AnimalBody }>,
   reply: FastifyReply
 ) {
   const orgDataBodySchema = z.object({
-    name: z.string().min(3).max(255),
-    phone: z.string().min(14).max(14),
-    email: z.string().email(),
-    password: z.string().min(6).max(255),
-    description: z.string().min(6).max(1000),
+    name: z.string().min(1).max(255),
+    type: z.nativeEnum(AnimalType),
+    age: z.number(),
+    weight: z.number(),
+    temperament: z.nativeEnum(AnimalTemperament),
+    description: z.string(),
+    breed: z.string().optional(),
   });
 
   const orgAddressBodySchema = z.object({
@@ -50,7 +56,7 @@ export async function register(
   let createdAddress: Address | undefined;
 
   try {
-    const registerUseCase = makeRegisterUseCase();
+    const registerUseCase = makeRegisterAnimalUseCase();
     const registerAddressUseCase = makeRegisterAddressUseCase();
 
     const { address } = await registerAddressUseCase.execute(orgAddressData);

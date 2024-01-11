@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Prisma, Animal } from "@prisma/client";
+import { Prisma, Animal, AnimalTemperament, AnimalType } from "@prisma/client";
 import { AnimalsRepository } from "../animals-repository";
 
 export class PrismaAnimalsRepository implements AnimalsRepository {
@@ -22,5 +22,43 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
   }
   async delete(id: string): Promise<void> {
     await prisma.animal.delete({ where: { id } });
+  }
+
+  async findMany({
+    city,
+    type,
+    age,
+    weight,
+    temperament,
+    breed,
+    orgId,
+    page = 1,
+    pageSize = 10,
+  }: {
+    city: string;
+    type?: AnimalType;
+    age?: number;
+    weight?: number;
+    temperament?: AnimalTemperament;
+    breed?: string;
+    orgId?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<Animal[]> {
+    const skip = (page - 1) * pageSize;
+
+    return prisma.animal.findMany({
+      where: {
+        address: { city },
+        type,
+        age,
+        weight,
+        temperament,
+        breed,
+        orgId,
+      },
+      skip,
+      take: pageSize,
+    });
   }
 }
