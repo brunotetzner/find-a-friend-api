@@ -1,4 +1,4 @@
-import { Prisma, Animal } from "@prisma/client";
+import { Prisma, Animal, AnimalTemperament, AnimalType } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { AnimalsRepository } from "../animals-repository";
 
@@ -50,7 +50,8 @@ export class InMemoryAnimalsRepository implements AnimalsRepository {
   async findMany({
     city,
     type,
-    age,
+    minAge,
+    maxAge,
     weight,
     temperament,
     breed,
@@ -59,10 +60,11 @@ export class InMemoryAnimalsRepository implements AnimalsRepository {
     pageSize = 10,
   }: {
     city: string;
-    type?: string;
-    age?: number;
+    type?: AnimalType;
+    minAge?: number;
+    maxAge?: number;
     weight?: number;
-    temperament?: string;
+    temperament?: AnimalTemperament;
     breed?: string;
     orgId?: string;
     page?: number;
@@ -72,10 +74,16 @@ export class InMemoryAnimalsRepository implements AnimalsRepository {
     const endIndex = startIndex + pageSize;
 
     const filteredAnimals = this.items.filter((animal) => {
+      // Validar se a idade do animal está dentro do intervalo
+      const isAgeInRange =
+        (!minAge || animal.age >= minAge) &&
+        (!maxAge || animal.age <= maxAge);
+
+      // Filtrar com base nos critérios fornecidos
       return (
         (!city || animal.addressId === city) &&
         (!type || animal.type === type) &&
-        (!age || animal.age === age) &&
+        isAgeInRange &&
         (!weight || animal.weight === weight) &&
         (!temperament || animal.temperament === temperament) &&
         (!breed || animal.breed === breed) &&

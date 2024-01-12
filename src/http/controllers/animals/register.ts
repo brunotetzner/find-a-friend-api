@@ -1,10 +1,11 @@
-import { OrgAlreadyExistsError } from "@/use-cases/errors/org-already-exists";
 import { ViaCepNotFoundError } from "@/use-cases/errors/via-cep-not-found";
 import { makeDeleteAddressUseCase } from "@/use-cases/factories/address/make-delete-address-use-case";
 import { makeRegisterAddressUseCase } from "@/use-cases/factories/address/make-register-address-use-case";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { Address, AnimalTemperament, AnimalType } from "@prisma/client";
+import { makeRegisterAnimalUseCase } from "@/use-cases/factories/animals/make-register-use-case";
+import { OrgNotFoundError } from "@/use-cases/errors/org-not-found";
 
 interface AnimalBody {
   id: string;
@@ -28,9 +29,11 @@ interface AnimalBody {
 }
 
 export async function register(
-  request: FastifyRequest<{ Body: AnimalBody }>,
+  request: FastifyRequest,
   reply: FastifyReply
 ) {
+
+  const orgId = request.user.sub
   const orgDataBodySchema = z.object({
     name: z.string().min(1).max(255),
     type: z.nativeEnum(AnimalType),
@@ -50,8 +53,9 @@ export async function register(
     addressNumber: z.string(),
   });
 
-  const orgData = orgDataBodySchema.parse(request.body);
-  const orgAddressData = orgAddressBodySchema.parse(request?.body?.address);
+  const reqBody = request.body as AnimalBody;
+  const animalData = orgDataBodySchema.parse(reqBody);
+  const animalAddressData = orgAddressBodySchema.parse(reqBody.address);
 
   let createdAddress: Address | undefined;
 
@@ -59,9 +63,9 @@ export async function register(
     const registerUseCase = makeRegisterAnimalUseCase();
     const registerAddressUseCase = makeRegisterAddressUseCase();
 
-    const { address } = await registerAddressUseCase.execute(orgAddressData);
+    const { address } = await registerAddressUseCase.execute(animalAddressData);
     createdAddress = address;
-    await registerUseCase.execute({ ...orgData, addressId: address.id });
+    await registerUseCase.execute({ ...animalData, breed: animalData.breed || '', addressId: address.id, orgId });
   } catch (err) {
     const deleteAddressUseCase = makeDeleteAddressUseCase();
 
@@ -69,7 +73,7 @@ export async function register(
       await deleteAddressUseCase.execute(createdAddress.id);
     }
 
-    if (err instanceof OrgAlreadyExistsError) {
+    if (err instanceof OrgNotFoundError) {
       return reply.status(409).send({ message: err.message });
     }
 

@@ -8,7 +8,8 @@ export interface AnimalsRepository {
   findMany(params: {
     city: string;
     type?: AnimalType;
-    age?: number;
+    minAge?: number;
+    maxAge?: number;
     weight?: number;
     temperament?: AnimalTemperament;
     breed?: string;

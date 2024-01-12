@@ -36,6 +36,7 @@ export class RegisterAnimalUseCase {
       type: body.type,
       age: body.age,
       weight: body.weight,
+      breed: body.breed,
       temperament: body.temperament,
       addressId: body.addressId,
       orgId: body.orgId,

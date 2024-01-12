@@ -24,10 +24,11 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
     await prisma.animal.delete({ where: { id } });
   }
 
-  async findMany({
+async findMany({
     city,
     type,
-    age,
+    minAge,
+    maxAge,
     weight,
     temperament,
     breed,
@@ -37,7 +38,8 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
   }: {
     city: string;
     type?: AnimalType;
-    age?: number;
+    minAge?: number;
+    maxAge?: number;
     weight?: number;
     temperament?: AnimalTemperament;
     breed?: string;
@@ -51,11 +53,17 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
       where: {
         address: { city },
         type,
-        age,
+        age: {
+          gte: minAge || undefined,
+          lte: maxAge || undefined,
+        },
         weight,
         temperament,
         breed,
         orgId,
+      },
+       orderBy: {
+        created_at: 'desc', // Ordenar por created_at em ordem decrescente
       },
       skip,
       take: pageSize,

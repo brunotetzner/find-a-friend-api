@@ -1,7 +1,10 @@
 import { FastifyInstance } from "fastify";
 
 import { getManyAnimals } from "./get-many-animals";
+import { register } from "./register";
+import { verifyJWT } from "@/http/middlewares/verifiy-jwt";
 
-export async function OrgRoutes(app: FastifyInstance) {
-  app.post("/animal/list", getManyAnimals);
+export async function AnimalRoutes(app: FastifyInstance) {
+  app.get("/animal/list", { onRequest: [verifyJWT]}, getManyAnimals);
+  app.post("/animal", { onRequest: [verifyJWT]},register);
 }

@@ -4,7 +4,8 @@ import { RequestParams } from "./interfaces";
 export interface AnimalsResquestParam extends RequestParams {
   city: string;
   type?: AnimalType;
-  age?: number;
+  minAge?: number;
+  maxAge?: number;
   weight?: number;
   temperament?: AnimalTemperament;
   breed?: string;

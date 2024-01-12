@@ -2,31 +2,41 @@ import { makeGetManyAnimalsUseCase } from "@/use-cases/factories/animals/make-ge
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { AnimalsResquestParam } from "@/interfaces/animals-interfaces";
+import { AnimalTemperament, AnimalType } from "@prisma/client";
 
-export async function getManyAnimals(
-  request: FastifyRequest<{ Params: AnimalsResquestParam }>,
-  reply: FastifyReply
-) {
+export async function getManyAnimals(request: FastifyRequest, reply: FastifyReply) {
+  const reqParams = request.query as AnimalsResquestParam;
+
   const animalsRequestDataSchema = z.object({
-    type: z.string().optional(),
-    age: z.string().optional(),
-    weight: z.string().optional(),
-    temperament: z.string().optional(),
+    city: z.string(),
+    type: z.nativeEnum(AnimalType).optional(),
+    maxAge: z.string().optional(),
+    minAge: z.string().optional(),
+    weight: z.number().optional(),
+    temperament: z.nativeEnum(AnimalTemperament).optional(),
     breed: z.string().optional(),
     orgId: z.string().optional(),
-    page: z.string().optional(),
-    pageSize: z.string().optional(),
+    page: z.string().optional().transform(val => val ? parseInt(val) : undefined),
+    pageSize: z.string().optional().transform(val => val ? parseInt(val) : undefined),
     created_at: z.string().optional(),
   });
 
-  const requestData = animalsRequestDataSchema.parse(request.params);
+  const requestData = animalsRequestDataSchema.parse(reqParams);
+
+  const requestDataToSend = {
+    ...requestData,
+    page: requestData.page && Number(requestData.page),
+    pageSize: requestData.pageSize && Number(requestData.pageSize),
+    minAge: requestData.minAge && Number(requestData.minAge),
+    maxAge: requestData.maxAge && Number(requestData.maxAge),
+  };
 
   // eslint-disable-next-line no-useless-catch
   try {
-    const getManyAnimals = makeGetManyAnimalsUseCase(requestData);
+    const getManyAnimalsUseCase = makeGetManyAnimalsUseCase();
+    const animalsResponse = await getManyAnimalsUseCase.execute(requestDataToSend);
+    return reply.send(animalsResponse);
   } catch (err) {
     throw err;
   }
-
-  return reply.status(201).send();
 }
