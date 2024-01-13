@@ -44,7 +44,7 @@ export class InMemoryAnimalsRepository implements AnimalsRepository {
 
   async delete(id: string): Promise<void> {
     const animalIndex = this.items.findIndex((item) => item.id === id);
-    await this.items.splice(animalIndex, 1)[0];
+    this.items.splice(animalIndex, 1)[0];
   }
 
   async findMany({
@@ -69,17 +69,14 @@ export class InMemoryAnimalsRepository implements AnimalsRepository {
     orgId?: string;
     page?: number;
     pageSize?: number;
-  }): Promise<Animal[]> {
+  }): Promise<{ animals: Animal[]; totalPages: number }> {
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
 
     const filteredAnimals = this.items.filter((animal) => {
-      // Validar se a idade do animal está dentro do intervalo
       const isAgeInRange =
-        (!minAge || animal.age >= minAge) &&
-        (!maxAge || animal.age <= maxAge);
+        (!minAge || animal.age >= minAge) && (!maxAge || animal.age <= maxAge);
 
-      // Filtrar com base nos critérios fornecidos
       return (
         (!city || animal.addressId === city) &&
         (!type || animal.type === type) &&
@@ -91,6 +88,9 @@ export class InMemoryAnimalsRepository implements AnimalsRepository {
       );
     });
 
-    return filteredAnimals.slice(startIndex, endIndex);
+    const animals = filteredAnimals.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(filteredAnimals.length / pageSize);
+
+    return { animals, totalPages };
   }
 }

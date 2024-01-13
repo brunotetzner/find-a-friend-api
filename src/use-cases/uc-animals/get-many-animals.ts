@@ -2,6 +2,7 @@ import { OrgsRepository } from "@/repositories/orgs-repository";
 import { Animal, AnimalTemperament, AnimalType } from "@prisma/client";
 import { AnimalsRepository } from "@/repositories/animals-repository";
 import { OrgNotFoundError } from "../errors/org-not-found";
+import { CityIsRequiredError } from "../errors/city-is-required-error";
 
 interface GetManyAnimalsParamsRequest {
   city: string;
@@ -13,6 +14,7 @@ interface GetManyAnimalsParamsRequest {
   orgId?: string;
   page?: number;
   pageSize?: number;
+  order?: "asc" | "desc";
 }
 
 interface GetManyAnimalsUseCaseResponse {
@@ -32,9 +34,11 @@ export class GetManyAnimalsUseCase {
     if (params.orgId && !org) {
       throw new OrgNotFoundError();
     }
-
+    if (!params.city) {
+      throw new CityIsRequiredError();
+    }
     const animals = await this.animalsRepository.findMany(params);
 
-    return { animals };
+    return animals;
   }
 }

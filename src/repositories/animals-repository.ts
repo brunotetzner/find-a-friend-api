@@ -16,5 +16,5 @@ export interface AnimalsRepository {
     orgId?: string;
     page?: number;
     pageSize?: number;
-  }): Promise<Animal[]>;
+  }): Promise<{ animals: Animal[]; totalPages: number }>;
 }

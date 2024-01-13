@@ -20,11 +20,12 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
     const Animal = await prisma.animal.update({ where: { id }, data });
     return Animal;
   }
+
   async delete(id: string): Promise<void> {
     await prisma.animal.delete({ where: { id } });
   }
 
-async findMany({
+  async findMany({
     city,
     type,
     minAge,
@@ -35,6 +36,7 @@ async findMany({
     orgId,
     page = 1,
     pageSize = 10,
+    order,
   }: {
     city: string;
     type?: AnimalType;
@@ -46,27 +48,38 @@ async findMany({
     orgId?: string;
     page?: number;
     pageSize?: number;
-  }): Promise<Animal[]> {
+    order?: "asc" | "desc";
+  }): Promise<{ animals: Animal[]; totalPages: number }> {
+    if (!pageSize) pageSize = 10;
+    if (!page) page = 1;
     const skip = (page - 1) * pageSize;
 
-    return prisma.animal.findMany({
-      where: {
-        address: { city },
-        type,
-        age: {
-          gte: minAge || undefined,
-          lte: maxAge || undefined,
-        },
-        weight,
-        temperament,
-        breed,
-        orgId,
+    const filterParams = {
+      address: { city },
+      type,
+      age: {
+        gte: minAge !== undefined ? minAge : undefined,
+        lte: maxAge !== undefined ? maxAge : undefined,
       },
-       orderBy: {
-        created_at: 'desc', // Ordenar por created_at em ordem decrescente
+      weight: weight !== undefined ? weight : undefined,
+      temperament: temperament !== undefined ? temperament : undefined,
+      breed: breed !== undefined ? breed : undefined,
+      orgId: orgId !== undefined ? orgId : undefined,
+      orderBy: {
+        created_at: order || "desc",
       },
-      skip,
-      take: pageSize,
-    });
+    };
+
+    const [animals, totalAnimals] = await prisma.$transaction([
+      prisma.animal.findMany({
+        where: filterParams,
+        skip,
+        take: pageSize,
+      }),
+      prisma.animal.count({ where: filterParams }),
+    ]);
+
+    const totalPages = Math.ceil(totalAnimals / pageSize);
+    return { totalPages, animals };
   }
 }

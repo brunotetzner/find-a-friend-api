@@ -5,6 +5,6 @@ import { register } from "./register";
 import { verifyJWT } from "@/http/middlewares/verifiy-jwt";
 
 export async function AnimalRoutes(app: FastifyInstance) {
-  app.get("/animal/list", { onRequest: [verifyJWT]}, getManyAnimals);
-  app.post("/animal", { onRequest: [verifyJWT]},register);
+  app.get("/animal/list", getManyAnimals);
+  app.post("/animal", { onRequest: [verifyJWT] }, register);
 }
