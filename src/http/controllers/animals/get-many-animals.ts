@@ -1,4 +1,4 @@
-import { makeGetManyAnimalsUseCase } from "@/use-cases/factories/animals/make-get-many-animals";
+import { makeGetManyAnimalsUseCase } from "@/use-cases/factories/animals/make-get-many-animals-use-case";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { AnimalsResquestParam } from "@/interfaces/animals-interfaces";

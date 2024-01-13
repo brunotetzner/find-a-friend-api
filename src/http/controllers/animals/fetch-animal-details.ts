@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { makeFetchAnimalDetailsUseCase } from "@/use-cases/factories/animals/make-fetch-animal-details";
+import { makeFetchAnimalDetailsUseCase } from "@/use-cases/factories/animals/make-fetch-animal-details-use-case";
 import { AnimalNotFoundError } from "@/use-cases/errors/animal-not-found";
 
 export async function fetchAnimalDetails(
