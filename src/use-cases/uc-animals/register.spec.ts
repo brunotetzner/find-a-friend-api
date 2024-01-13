@@ -8,8 +8,8 @@ import { Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { OrgNotFoundError } from "../errors/org-not-found";
 
-let orgsRepository: InMemoryOrgRepository;
 let animalsRepository: InMemoryAnimalsRepository;
+let orgsRepository: InMemoryOrgRepository;
 let addressRepository: InMemoryAddressRepository;
 let sut: RegisterAnimalUseCase;
 
@@ -35,9 +35,9 @@ const animalBody: Prisma.AnimalUncheckedCreateInput = {
 
 describe("Register Animals Use case", () => {
   beforeEach(async () => {
+    animalsRepository = new InMemoryAnimalsRepository();
     orgsRepository = new InMemoryOrgRepository();
     addressRepository = new InMemoryAddressRepository();
-    animalsRepository = new InMemoryAnimalsRepository();
 
     sut = new RegisterAnimalUseCase(animalsRepository, orgsRepository);
 

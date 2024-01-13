@@ -9,7 +9,10 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
   }
 
   async findById(id: string): Promise<Animal | null> {
-    const Animal = await prisma.animal.findUnique({ where: { id } });
+    const Animal = await prisma.animal.findUnique({
+      where: { id },
+      include: { address: true },
+    });
     return Animal || null;
   }
 
