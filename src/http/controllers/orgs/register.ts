@@ -2,7 +2,7 @@ import { OrgAlreadyExistsError } from "@/use-cases/errors/org-already-exists";
 import { ViaCepNotFoundError } from "@/use-cases/errors/via-cep-not-found";
 import { makeDeleteAddressUseCase } from "@/use-cases/factories/address/make-delete-address-use-case";
 import { makeRegisterAddressUseCase } from "@/use-cases/factories/address/make-register-address-use-case";
-import { makeRegisterUseCase } from "@/use-cases/factories/orgs/make-register-use-case";
+import { makeRegisterOrgUseCase } from "@/use-cases/factories/orgs/make-register-use-case";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { Address } from "@prisma/client";
@@ -50,7 +50,7 @@ export async function register(
   let createdAddress: Address | undefined;
 
   try {
-    const registerUseCase = makeRegisterUseCase();
+    const registerUseCase = makeRegisterOrgUseCase();
     const registerAddressUseCase = makeRegisterAddressUseCase();
 
     const { address } = await registerAddressUseCase.execute(orgAddressData);

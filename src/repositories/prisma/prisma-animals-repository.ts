@@ -68,14 +68,12 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
       temperament: temperament !== undefined ? temperament : undefined,
       breed: breed !== undefined ? breed : undefined,
       orgId: orgId !== undefined ? orgId : undefined,
-      orderBy: {
-        created_at: order || "desc",
-      },
     };
 
     const [animals, totalAnimals] = await prisma.$transaction([
       prisma.animal.findMany({
         where: filterParams,
+        orderBy: { created_at: order || "desc" },
         skip,
         take: pageSize,
       }),
