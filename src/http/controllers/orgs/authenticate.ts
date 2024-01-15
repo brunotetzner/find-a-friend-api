@@ -18,10 +18,9 @@ export async function authenticate(
     const authenticateUseCase = makeAuthenticateUseCase();
 
     const { org } = await authenticateUseCase.execute({ email, password });
-
     const token = await reply.jwtSign({ sign: { sub: org.id } });
 
-    const refreshToken = await reply.jwtSign({}, {
+    const refreshToken = await reply.jwtSign({
       sign: {
         sub: org.id,
         expiresIn: "7d",

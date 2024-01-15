@@ -5,6 +5,7 @@ import { env } from "./env";
 import { OrgRoutes } from "./http/controllers/orgs/routes";
 import fastifyCookie from "@fastify/cookie";
 import { AnimalRoutes } from "./http/controllers/animals/routes";
+
 export const app = fastify();
 
 app.register(fastifyJwt, {

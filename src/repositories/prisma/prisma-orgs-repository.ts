@@ -14,8 +14,12 @@ export class PrismaOrgsRepository implements OrgsRepository {
   }
 
   async findById(id: string): Promise<Org | null> {
-    const Org = await prisma.org.findUnique({ where: { id } });
-    return Org || null;
+    const org = await prisma.org.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    return org || null;
   }
 
   async update(id: string, data: Prisma.OrgUncheckedUpdateInput): Promise<Org> {

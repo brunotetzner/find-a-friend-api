@@ -28,12 +28,8 @@ interface AnimalBody {
   };
 }
 
-export async function register(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
-
-  const orgId = request.user.sub
+export async function register(request: FastifyRequest, reply: FastifyReply) {
+  const orgId = request.user.sign.sub.sub;
   const orgDataBodySchema = z.object({
     name: z.string().min(1).max(255),
     type: z.nativeEnum(AnimalType),
@@ -65,7 +61,12 @@ export async function register(
 
     const { address } = await registerAddressUseCase.execute(animalAddressData);
     createdAddress = address;
-    await registerUseCase.execute({ ...animalData, breed: animalData.breed || '', addressId: address.id, orgId });
+    await registerUseCase.execute({
+      ...animalData,
+      breed: animalData.breed || "",
+      addressId: address.id,
+      orgId,
+    });
   } catch (err) {
     const deleteAddressUseCase = makeDeleteAddressUseCase();
 
