@@ -13,7 +13,7 @@ const orgData = {
   password: "123456",
 };
 
-describe("Org details (e2e)", () => {
+describe("Update org (e2e)", () => {
   beforeAll(async () => {
     await app.ready();
 
@@ -35,7 +35,7 @@ describe("Org details (e2e)", () => {
     await app.close();
   });
 
-  it("should be able to get org details", async () => {
+  it("should be able to update an org", async () => {
     const registerOrgUseCase = makeRegisterOrgUseCase();
     await registerOrgUseCase.execute(orgData);
 
@@ -44,15 +44,16 @@ describe("Org details (e2e)", () => {
       .send({ email: orgData.email, password: orgData.password });
 
     const response = await request(app.server)
-      .get("/org/me")
+      .put("/org")
       .set("Authorization", `Bearer ${loginResponse.body.token}`)
-      .send();
-    expect(response.status).toBe(200);
-    expect(response.body.org).toHaveProperty("id");
+      .send({ name: "Centro de adoção de teste" });
+    expect(response.status).toBe(204);
   });
 
-  it("should not get org details if is not authenticated", async () => {
-    const response = await request(app.server).get("/org/me");
+  it("should not be able update an org if is not authenticated", async () => {
+    const response = await request(app.server)
+      .put("/org")
+      .send({ name: "Centro de adoção de teste" });
     expect(response.status).toBe(401);
   });
 });
