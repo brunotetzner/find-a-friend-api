@@ -18,14 +18,14 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
 
   async update(
     id: string,
+    orgId: string,
     data: Prisma.AnimalUncheckedUpdateInput
-  ): Promise<Animal> {
-    const Animal = await prisma.animal.update({ where: { id }, data });
-    return Animal;
+  ): Promise<void> {
+    await prisma.animal.update({ where: { id, orgId }, data });
   }
 
-  async delete(id: string): Promise<void> {
-    await prisma.animal.delete({ where: { id } });
+  async delete(orgId: string, id: string): Promise<void> {
+    await prisma.animal.delete({ where: { id, orgId } });
   }
 
   async findMany({

@@ -12,5 +12,5 @@ export async function OrgRoutes(app: FastifyInstance) {
   app.post("/org/authenticate", authenticate);
   app.get("/org/me", { onRequest: [verifyJWT] }, fetchOrgDetails);
   app.delete("/org", { onRequest: [verifyJWT] }, deleteOrg);
-  app.put("/org", { onRequest: [verifyJWT] }, updateOrg);
+  app.patch("/org", { onRequest: [verifyJWT] }, updateOrg);
 }

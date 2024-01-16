@@ -44,7 +44,7 @@ describe("Update org (e2e)", () => {
       .send({ email: orgData.email, password: orgData.password });
 
     const response = await request(app.server)
-      .put("/org")
+      .patch("/org")
       .set("Authorization", `Bearer ${loginResponse.body.token}`)
       .send({ name: "Centro de adoção de teste" });
     expect(response.status).toBe(204);
@@ -52,7 +52,7 @@ describe("Update org (e2e)", () => {
 
   it("should not be able update an org if is not authenticated", async () => {
     const response = await request(app.server)
-      .put("/org")
+      .patch("/org")
       .send({ name: "Centro de adoção de teste" });
     expect(response.status).toBe(401);
   });

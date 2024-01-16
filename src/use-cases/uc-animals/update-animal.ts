@@ -12,7 +12,11 @@ interface updateAnimalUseCaseRequest {
 
 export class UpdateAnimalUseCase {
   constructor(private animalsRepository: AnimalsRepository) {}
-  async execute(id: string, body: updateAnimalUseCaseRequest): Promise<void> {
-    await this.animalsRepository.update(id, body);
+  async execute(
+    id: string,
+    orgId: string,
+    body: updateAnimalUseCaseRequest
+  ): Promise<void> {
+    await this.animalsRepository.update(id, orgId, body);
   }
 }

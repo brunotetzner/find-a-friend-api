@@ -29,8 +29,9 @@ interface AnimalBody {
 }
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
-  const orgId = request.user.sign.sub.sub;
-  const orgDataBodySchema = z.object({
+  const orgId = request.user.sign.sub;
+
+  const animalDataBodySchema = z.object({
     name: z.string().min(1).max(255),
     type: z.nativeEnum(AnimalType),
     age: z.number(),
@@ -40,7 +41,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     breed: z.string().optional(),
   });
 
-  const orgAddressBodySchema = z.object({
+  const animalAddressBodySchema = z.object({
     zipCode: z.string().min(8).max(8),
     street: z.string().optional(),
     city: z.string().optional(),
@@ -50,8 +51,8 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   });
 
   const reqBody = request.body as AnimalBody;
-  const animalData = orgDataBodySchema.parse(reqBody);
-  const animalAddressData = orgAddressBodySchema.parse(reqBody.address);
+  const animalData = animalDataBodySchema.parse(reqBody);
+  const animalAddressData = animalAddressBodySchema.parse(reqBody.address);
 
   let createdAddress: Address | undefined;
 

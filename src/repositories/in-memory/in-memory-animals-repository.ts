@@ -31,19 +31,22 @@ export class InMemoryAnimalsRepository implements AnimalsRepository {
 
   async update(
     id: string,
+    orgId: string,
     data: Prisma.AnimalUncheckedUpdateInput
-  ): Promise<Animal> {
-    const animalIndex = this.items.findIndex((item) => item.id === id);
+  ): Promise<void> {
+    const animalIndex = this.items.findIndex(
+      (item) => item.id === id && item.orgId === orgId
+    );
 
     const existingAnimal = { ...this.items[animalIndex] };
     const updatedAnimal = Object.assign(existingAnimal, data);
     this.items[animalIndex] = updatedAnimal;
-
-    return updatedAnimal;
   }
 
-  async delete(id: string): Promise<void> {
-    const animalIndex = this.items.findIndex((item) => item.id === id);
+  async delete(orgId: string, id: string): Promise<void> {
+    const animalIndex = this.items.findIndex(
+      (item) => item.id === id && item.orgId === orgId
+    );
     this.items.splice(animalIndex, 1)[0];
   }
 

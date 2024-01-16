@@ -16,7 +16,7 @@ export async function getManyAnimals(
     DESC = "desc",
   }
   const animalsRequestDataSchema = z.object({
-    city: z.string(),
+    city: z.string().refine((data) => data.trim() !== ""),
     type: z.nativeEnum(AnimalType).optional(),
     maxAge: z.string().optional(),
     minAge: z.string().optional(),
@@ -40,10 +40,10 @@ export async function getManyAnimals(
 
   const requestDataToSend = {
     ...requestData,
-    page: requestData.page && Number(requestData.page),
-    pageSize: requestData.pageSize && Number(requestData.pageSize),
-    minAge: requestData.minAge && Number(requestData.minAge),
-    maxAge: requestData.maxAge && Number(requestData.maxAge),
+    page: requestData.page,
+    pageSize: requestData.pageSize,
+    minAge: requestData.minAge,
+    maxAge: requestData.maxAge,
   };
 
   try {

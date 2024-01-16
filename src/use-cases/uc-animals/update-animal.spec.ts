@@ -65,7 +65,7 @@ describe("Update Animals Use case", () => {
       breed: animalBody.breed || "",
     });
 
-    await sut.execute(animal.id, {
+    await sut.execute(animal.id, org.id, {
       ...animalBody,
       name: "Sofia",
     });

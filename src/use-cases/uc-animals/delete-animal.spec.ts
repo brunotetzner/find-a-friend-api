@@ -50,12 +50,11 @@ describe("delete Animal Use case", () => {
     orgBody.addressId = id;
   });
 
-  it("Should be able to delete a animals", async () => {
+  it("Should be able to delete a animal", async () => {
     const org = await orgsRepository.create({
       ...orgBody,
       password_hash: await hash("123456", 6),
     });
-    await sut.execute(org.id);
     animalBody.orgId = org.id;
     animalBody.addressId = org.addressId;
 
@@ -64,7 +63,7 @@ describe("delete Animal Use case", () => {
       breed: animalBody.breed || "",
     });
 
-    await sut.execute(animal.id);
+    await sut.execute(org.id, animal.id);
 
     const getAnimal = await animalsRepository.findById(animal.id);
     expect(getAnimal).toEqual(null);
