@@ -43,7 +43,7 @@ describe("get org Use case", () => {
       password_hash: await hash("123456", 6),
     });
 
-    const { org } = await sut.execute({
+    const org = await sut.execute({
       orgId: orgData.id,
     });
     expect(org.id).toEqual(expect.any(String));

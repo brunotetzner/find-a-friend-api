@@ -19,7 +19,7 @@ describe("Org details (e2e)", () => {
       .set("Authorization", `Bearer ${token}`)
       .send();
     expect(response.status).toBe(200);
-    expect(response.body.org).toHaveProperty("id");
+    expect(response.body).toHaveProperty("id");
   });
 
   it("should not get org details if is not authenticated", async () => {

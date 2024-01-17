@@ -12,3 +12,14 @@ export interface CreateOrgBody {
 export interface CreateOrgBodyRequest extends CreateOrgBody {
   address: CreateAddressBody;
 }
+
+export interface orgResponse {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  description: string;
+  created_at: Date;
+  updated_at: Date;
+  addressId: string;
+}
