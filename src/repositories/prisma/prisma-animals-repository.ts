@@ -52,7 +52,7 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
     page?: number;
     pageSize?: number;
     order?: "asc" | "desc";
-  }): Promise<{ animals: Animal[]; totalPages: number }> {
+  }): Promise<{ animals: Animal[]; totalPages: number; totalAnimals: number }> {
     if (!pageSize) pageSize = 10;
     if (!page) page = 1;
     const skip = (page - 1) * pageSize;
@@ -81,6 +81,6 @@ export class PrismaAnimalsRepository implements AnimalsRepository {
     ]);
 
     const totalPages = Math.ceil(totalAnimals / pageSize);
-    return { totalPages, animals };
+    return { totalPages, animals, totalAnimals };
   }
 }

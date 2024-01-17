@@ -6,27 +6,7 @@ import { z } from "zod";
 import { Address, AnimalTemperament, AnimalType } from "@prisma/client";
 import { makeRegisterAnimalUseCase } from "@/use-cases/factories/animals/make-register-use-case";
 import { OrgNotFoundError } from "@/use-cases/errors/org-not-found";
-
-interface AnimalBody {
-  id: string;
-  name: string;
-  type: AnimalType;
-  age: number;
-  weight: number;
-  temperament: AnimalTemperament;
-  description: string;
-  breed?: string;
-  created_at: string;
-  updated_at?: string;
-  address: {
-    zipCode: string;
-    street: string;
-    city: string;
-    state: string;
-    country: string;
-    addressNumber: number;
-  };
-}
+import { CreateAnimalBodyRequest } from "@/dtos/animal.dto";
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const orgId = request.user.sign.sub;
@@ -43,14 +23,14 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
   const animalAddressBodySchema = z.object({
     zipCode: z.string().min(8).max(8),
-    street: z.string().optional(),
-    city: z.string().optional(),
-    state: z.string().max(2).min(2).optional(),
-    country: z.string(),
-    addressNumber: z.string(),
+    street: z.string().optional().default(""),
+    city: z.string().optional().default(""),
+    state: z.string().max(2).min(2).optional().default(""),
+    country: z.string().default(""),
+    addressNumber: z.string().default(""),
   });
 
-  const reqBody = request.body as AnimalBody;
+  const reqBody = request.body as CreateAnimalBodyRequest;
   const animalData = animalDataBodySchema.parse(reqBody);
   const animalAddressData = animalAddressBodySchema.parse(reqBody.address);
 

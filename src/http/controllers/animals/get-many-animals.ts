@@ -1,26 +1,32 @@
 import { makeGetManyAnimalsUseCase } from "@/use-cases/factories/animals/make-get-many-animals-use-case";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { AnimalsResquestParam } from "@/interfaces/animals-interfaces";
 import { AnimalTemperament, AnimalType } from "@prisma/client";
 import { OrgNotFoundError } from "@/use-cases/errors/org-not-found";
+import { ListAnimalsResquestParams } from "@/dtos/animal.dto";
+import { OrderResponseBy } from "@/enumerators/shared-enums";
 
 export async function getManyAnimals(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const reqParams = request.query as AnimalsResquestParam;
+  const reqParams = request.query;
 
-  enum OrderBy {
-    ASC = "asc",
-    DESC = "desc",
-  }
   const animalsRequestDataSchema = z.object({
     city: z.string().refine((data) => data.trim() !== ""),
     type: z.nativeEnum(AnimalType).optional(),
-    maxAge: z.string().optional(),
-    minAge: z.string().optional(),
-    weight: z.number().optional(),
+    maxAge: z
+      .string()
+      .optional()
+      .transform((val) => (val ? parseInt(val) : undefined)),
+    minAge: z
+      .string()
+      .optional()
+      .transform((val) => (val ? parseInt(val) : undefined)),
+    weight: z
+      .string()
+      .optional()
+      .transform((val) => (val ? parseInt(val) : undefined)),
     temperament: z.nativeEnum(AnimalTemperament).optional(),
     breed: z.string().optional(),
     orgId: z.string().optional(),
@@ -32,25 +38,19 @@ export async function getManyAnimals(
       .string()
       .optional()
       .transform((val) => (val ? parseInt(val) : undefined)),
-    created_at: z.string().optional(),
-    orderBy: z.nativeEnum(OrderBy).optional(),
+    created_at: z
+      .string()
+      .optional()
+      .transform((val) => (val ? new Date(val) : undefined)),
+    orderBy: z.nativeEnum(OrderResponseBy).optional(),
   });
 
-  const requestData = animalsRequestDataSchema.parse(reqParams);
-
-  const requestDataToSend = {
-    ...requestData,
-    page: requestData.page,
-    pageSize: requestData.pageSize,
-    minAge: requestData.minAge,
-    maxAge: requestData.maxAge,
-  };
+  const requestData: ListAnimalsResquestParams =
+    animalsRequestDataSchema.parse(reqParams);
 
   try {
     const getManyAnimalsUseCase = makeGetManyAnimalsUseCase();
-    const animalsResponse = await getManyAnimalsUseCase.execute(
-      requestDataToSend
-    );
+    const animalsResponse = await getManyAnimalsUseCase.execute(requestData);
     return reply.send(animalsResponse);
   } catch (err) {
     if (err instanceof OrgNotFoundError) {

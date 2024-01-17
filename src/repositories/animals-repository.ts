@@ -20,5 +20,5 @@ export interface AnimalsRepository {
     orgId?: string;
     page?: number;
     pageSize?: number;
-  }): Promise<{ animals: Animal[]; totalPages: number }>;
+  }): Promise<{ animals: Animal[]; totalPages: number; totalAnimals: number }>;
 }

@@ -6,25 +6,10 @@ import { makeRegisterOrgUseCase } from "@/use-cases/factories/orgs/make-register
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { Address } from "@prisma/client";
-
-interface OrgBody {
-  name: string;
-  phone: string;
-  email: string;
-  password: string;
-  description: string;
-  address: {
-    zipCode: string;
-    street: string;
-    city: string;
-    state: string;
-    country: string;
-    addressNumber: number;
-  };
-}
+import { CreateOrgBodyRequest } from "@/dtos/org.dto";
 
 export async function register(
-  request: FastifyRequest<{ Body: OrgBody }>,
+  request: FastifyRequest<{ Body: CreateOrgBodyRequest }>,
   reply: FastifyReply
 ) {
   const orgDataBodySchema = z.object({
@@ -37,11 +22,11 @@ export async function register(
 
   const orgAddressBodySchema = z.object({
     zipCode: z.string().min(8).max(8),
-    street: z.string().optional(),
-    city: z.string().optional(),
-    state: z.string().max(2).min(2).optional(),
-    country: z.string(),
-    addressNumber: z.string(),
+    street: z.string().optional().default(""),
+    city: z.string().optional().default(""),
+    state: z.string().max(2).min(2).optional().default(""),
+    country: z.string().default(""),
+    addressNumber: z.string().default(""),
   });
 
   const orgData = orgDataBodySchema.parse(request.body);

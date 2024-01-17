@@ -1,15 +1,7 @@
 import { AddressRepository } from "@/repositories/address-repository";
 import { Address } from "@prisma/client";
 import { VIACEP } from "@/integration/viacep/integration";
-
-interface RegisterAddressUseCaseRequest {
-  zipCode: string;
-  street?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  addressNumber: string;
-}
+import { CreateAddressBody } from "@/dtos/address.dto";
 
 interface RegisterAddressUseCaseResponse {
   address: Address;
@@ -17,7 +9,7 @@ interface RegisterAddressUseCaseResponse {
 export class RegisterAddressUseCase {
   constructor(private addressRepository: AddressRepository) {}
   async execute(
-    body: RegisterAddressUseCaseRequest
+    body: CreateAddressBody
   ): Promise<RegisterAddressUseCaseResponse> {
     const viaCepResponse = await VIACEP.getAddress(body.zipCode);
 
@@ -27,7 +19,7 @@ export class RegisterAddressUseCase {
       city: viaCepResponse.localidade || body.city || "",
       state: viaCepResponse.uf || body.state || "",
       country: "Brasil",
-      addressNumber: body.addressNumber,
+      addressNumber: body.addressNumber.toString(),
     };
 
     const address = await this.addressRepository.create(addressBody);

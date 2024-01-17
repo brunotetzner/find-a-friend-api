@@ -2,24 +2,14 @@ import { OrgsRepository } from "@/repositories/orgs-repository";
 import { hash } from "bcryptjs";
 import { OrgAlreadyExistsError } from "../errors/org-already-exists";
 import { Org } from "@prisma/client";
-
-interface RegisterUseCaseRequest {
-  name: string;
-  phone: string;
-  email: string;
-  password: string;
-  addressId: string;
-  description: string;
-}
+import { CreateOrgBody } from "@/dtos/org.dto";
 
 interface RegisterUseCaseResponse {
   org: Org;
 }
 export class RegisterUseCase {
   constructor(private orgsRepository: OrgsRepository) {}
-  async execute(
-    body: RegisterUseCaseRequest
-  ): Promise<RegisterUseCaseResponse> {
+  async execute(body: CreateOrgBody): Promise<RegisterUseCaseResponse> {
     const orgWithTheSameEmail = await this.orgsRepository.findByEmail(
       body.email
     );
